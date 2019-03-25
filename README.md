@@ -17,7 +17,6 @@ UDP: loggen --inet --dgram --size 300 --rate 1000 --interval 10 10.61.132.35 666
 TCP: loggen --size 300 --rate 1000 --interval 10 10.61.132.38 6667
 
 workspace('defaultaworkspace').Loggen_CL | where TimeGenerated > now() - 10m | count
-
 ```
 
 # Contribute
