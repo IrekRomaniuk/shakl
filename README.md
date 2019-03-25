@@ -17,8 +17,8 @@ Below is example with Palo Alto Networks (see _values.PanTraffic.yaml_ and _valu
 helm del --purge loggen
 helm install -f charts/logstash/values.Loggen.yaml charts/logstash/ --name loggen --set replicaCount=2
 
-UDP: loggen --inet --dgram --size 300 --rate 1000 --interval 10 10.61.132.35 6666
-TCP: loggen --size 300 --rate 1000 --interval 10 10.61.132.38 6667
+UDP: loggen --inet --dgram --size 300 --rate 1000 --interval 10 10.161.132.35 6666
+TCP: loggen --size 300 --rate 1000 --interval 10 10.161.132.38 6667
 
 workspace('defaultaworkspace').Loggen_CL | where TimeGenerated > now() - 10m | count
 ```
