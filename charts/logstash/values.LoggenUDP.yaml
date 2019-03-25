@@ -1,0 +1,40 @@
+service:
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  type: LoadBalancer
+  ports:
+    syslog:
+      port: 6666
+      targetPort: syslog-udp-6666
+      protocol: UDP  
+ports:      
+  - name: syslog-udp-6666
+    containerPort: 6666
+    protocol: UDP    
+inputs:
+  main: |-
+    input {
+      udp {
+        port => 6666
+        workers => 4
+        queue_size => 8000 # default 2000
+        }
+    }
+filters:
+  main: |-
+    filter {
+      grok {
+        match => { "message" => "<%{POSINT:syslog_pri}>%{DATA:Timestamp} %{HOSTNAME:Device} %{GREEDYDATA:Data}" }
+        overwrite => [ "message" ]
+      }
+    }    
+outputs:  
+  main: |-
+    output {
+      stdout { codec => rubydebug }
+      azure_loganalytics {
+      customer_id => ""
+      shared_key => ""
+      log_type => "Loggen"
+      }
+    }

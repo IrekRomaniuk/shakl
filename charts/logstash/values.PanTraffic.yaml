@@ -1,0 +1,46 @@
+service:
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  type: LoadBalancer
+  ports:
+    syslog:
+      port: 12515
+      targetPort: log-tcp-12515
+      protocol: TCP  
+ports:      
+  - name: log-tcp-12515
+    containerPort: 12515
+    protocol: TCP    
+inputs:
+  main: |-
+    input {
+      tcp {
+        port => 12515
+        }
+    }
+filters:
+  main: |-
+    filter {
+                grok {
+                        match => [ "message", "<%{POSINT:syslog_pri}>%{SYSLOGTIMESTAMP:syslog_timestamp} %{GREEDYDATA:raw_message}" ]
+                }
+                csv {
+                        columns => [ "Domain","ReceiveTime","SerialNum","Type","Subtype","ConfigVersion","GenTime","SrcIP","DstIP","NATSrcIP","NATDstIP","Rule","User","DstUser","Application","VirtualSystem","SrcZone","DstZone","InInt","OutInt","LogAction","TimeLogged","SessionID","RepeatCount","SrcPort","DstPort","NATSrcPort","NATDstPort","Flags","Protocol","Action","Bytes","BytesSent","BytesReceived","Packets","StartTime","ElapsedTime","Category","Padding","Seqno","ActionFlags","SrcLocation","DstLocation","Padding","PacketsSent","PacketsReceived","SessionEndReason","column48","column49","column50","column51","column52","Device" ]
+                        remove_field => [ "Domain","SerialNum","ConfigVersion","DstUser","VirtualSystem","SessionID","RepeatCount","SrcPort","NATSrcPort","NATDstPort","Flags","Category","Padding","Seqno","ActionFlags","SrcLocation","DstLocation","Padding","column48","column49","column50","column51","column52","column54","column55","column56","column57","column58","column59","column60","@version","column61","column62","column63","column64","column65","column66","column67","column68"]
+                        skip_empty_columns => true
+                        add_tag => [ "PAN-TRAFFIC" ]
+                }
+                mutate {
+                        remove_field => ["raw_message","syslog_pri", "Destination Country"]
+                }
+    }    
+outputs:  
+  main: |-
+    output {
+      stdout { codec => rubydebug }
+      azure_loganalytics {
+      customer_id => ""
+      shared_key => ""
+      log_type => "PanTraffic"
+      }
+    }

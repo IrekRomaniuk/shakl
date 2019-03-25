@@ -1,0 +1,46 @@
+service:
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  type: LoadBalancer
+  ports:
+    syslog:
+      port: 12514
+      targetPort: log-tcp-12514
+      protocol: TCP  
+ports:      
+  - name: log-tcp-12514
+    containerPort: 12514
+    protocol: TCP    
+inputs:
+  main: |-
+    input {
+      tcp {
+        port => 12514
+        }
+    }
+filters:
+  main: |-
+    filter {
+                grok {
+                        match => [ "message", "<%{POSINT:syslog_pri}>%{SYSLOGTIMESTAMP:syslog_timestamp} %{GREEDYDATA:raw_message}" ]
+                }
+                csv {
+                        columns => [ "Domain","ReceiveTime","SerialNum","Type","Subtype","ConfigVersion","GenTime","SrcIP","DstIP","NATSrcIP","NATDstIP","Rule","User","DstUser","Application","VirtualSystem","SrcZone","DstZone","InInt","OutInt","LogAction","TimeLogged","SessionID","RepeatCount","SrcPort","DstPort","NATSrcPort","NATDstPort","Flags","Protocol","Action","URL","Threat","Category","Severity","Direction","Seqno","ActionFlags","SrcLocation","DstLocation","Padding","ContentType","Pcap","File","Cloud","URL","User_agent","Filetype","Xff","Referer","Sender","Subject","Recipient","Report","column55","column56","column57","column58","column59","Device" ]
+                        remove_field => [ "Domain","SerialNum","URL","ConfigVersion","DstUser","VirtualSystem","SessionID","RepeatCount","SrcPort","NATSrcPort","NATDstPort","Direction","Seqno","ActionFlags","SrcLocation","DstLocation","Padding","ContentType","Pcap","Cloud","Xff","Referer","Sender","Subject","Recipient","Report","column55","column56","column57","column58","column59","column65","column66","column67","column68","column69","column72","column73","@version","column70","column71","column73","column71","column75"]
+                        skip_empty_columns => true
+                        add_tag => [ "PAN-THREAT" ]
+                }
+                mutate {
+                        remove_field => ["raw_message","syslog_pri", "Destination Country"]
+                }
+    }    
+outputs:  
+  main: |-
+    output {
+      stdout { codec => rubydebug }
+      azure_loganalytics {
+      customer_id => ""
+      shared_key => ""
+      log_type => "PanThreat"
+      }
+    }
