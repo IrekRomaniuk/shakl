@@ -11,7 +11,7 @@ Below is example with Palo Alto Networks (see _values.PanTraffic.yaml_ and _valu
 
 # Build and Test notes
 
-*azure-pipelines.yml* to build and upload image to registry (repository: name.azurecr.io/shakl), see _values.yaml_
+*azure-pipelines.yml* to build and upload image to registry (repository: _name.azurecr.io/shakl_), see _values.yaml_
 
 ```
 helm del --purge loggen
