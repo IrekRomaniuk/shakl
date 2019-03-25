@@ -1,5 +1,5 @@
 # Introduction 
-Syslog to Log Analytics (Sentinel)
+Syslog to Log Analytics (Sentinel). This is alternative to Sentinel connectors using Kubernetes and Logstash
 
 # Getting Started
 
