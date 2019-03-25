@@ -4,7 +4,7 @@ Syslog to Log Analytics (Sentinel). This is alternative to Sentinel connectors u
 # Getting Started
 
 Look at [My blog post](https://medium.com/@IrekRomaniuk/syslog-to-azure-sentinel-ac7a5902c33e)
-also [Logstash Chart documentation](https://github.com/helm/charts/tree/master/stable/logstash). Below is example with Palo Alto Networks (see values.PanTraffic.yaml and values.PanThreat.yamlin shakl/charts/logstash/)
+also [Logstash Chart documentation](https://github.com/helm/charts/tree/master/stable/logstash). Below is example with Palo Alto Networks (see _values.PanTraffic.yaml_ and _values.PanThreat.yaml_ in *shakl/charts/logstash/*)
 
 ![Diagram](shakl.png)
 
