@@ -8,7 +8,7 @@ also [Logstash Chart documentation](https://github.com/helm/charts/tree/master/s
 
 ![Diagram](shakl.png)
 
-# Build and Test
+# Build and Test notes
 ```
 helm del --purge loggen
 helm install -f charts/logstash/values.Loggen.yaml charts/logstash/ --name loggen --set replicaCount=2
