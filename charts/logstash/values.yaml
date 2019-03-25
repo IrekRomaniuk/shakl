@@ -9,7 +9,7 @@ updateStrategy:
 terminationGracePeriodSeconds: 30
 
 image:
-  repository: acrniuk.azurecr.io/logstash
+  repository: acr.azurecr.io/shakl
   tag: latest
   pullPolicy: Always
   registry: acr-auth

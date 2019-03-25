@@ -10,7 +10,7 @@ pool:
   vmImage: 'ubuntu-16.04'
 
 variables:
-  projectName: logstash
+  projectName: shakl
   imageName: '$(projectName)'
   registryServerName: '.azurecr.io'
   registryLogin: ''
